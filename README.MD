@@ -311,4 +311,16 @@ If GitHub rejects a push because a secret was detected, do not simply remove the
 
 ---
 
-> Built by Shivam | Cloud & DevOps Engineer | [GitHub](https://github.com/your-username) | [LinkedIn](https://linkedin.com/company/cloudbuild-technologies/)
+
+---
+👩‍🏫 **Guided and Supported by [Trupti Mane Ma’am](https://github.com/iamtruptimane)**  
+---
+
+👨‍💻 **Developed By:**  
+**Shivam Garud**  
+🧠 *DevOps & Cloud Engineer*  
+💼 *DevOps Engineer | CI/CD | Docker | Kubernetes | Terraform | Ansible | AWS | Linux | Cloud Automation | Infrastructure as Code!*  
+🌐 [GitHub Profile](https://github.com/Shivamgarud8)
+🌐 [Medium blog](https://medium.com/@shivam.garud2011)
+🌐 [linkedin](www.linkedin.com/in/shivam-garud)
+🌐 [portfolio](https://shivam-garud.vercel.app/)
