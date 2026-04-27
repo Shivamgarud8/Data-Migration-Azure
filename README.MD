@@ -26,6 +26,248 @@ This project demonstrates a real-world, production-style multi-cloud data migrat
 
 ---
 
+
+<style>
+@keyframes flow1 { 0%{stroke-dashoffset:200} 100%{stroke-dashoffset:0} }
+@keyframes flow2 { 0%{stroke-dashoffset:240} 100%{stroke-dashoffset:0} }
+@keyframes flow3 { 0%{stroke-dashoffset:180} 100%{stroke-dashoffset:0} }
+@keyframes pulse { 0%,100%{r:5;opacity:1} 50%{r:8;opacity:.5} }
+@keyframes pulse2 { 0%,100%{r:5;opacity:1} 50%{r:8;opacity:.4} }
+@keyframes pulse3 { 0%,100%{r:5;opacity:1} 50%{r:8;opacity:.5} }
+@keyframes dot-travel1 { 0%{offset-distance:0%} 100%{offset-distance:100%} }
+@keyframes dot-travel2 { 0%{offset-distance:0%} 100%{offset-distance:100%} }
+@keyframes dot-travel3 { 0%{offset-distance:0%} 100%{offset-distance:100%} }
+@keyframes fadein { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
+@keyframes shimmer { 0%,100%{opacity:.7} 50%{opacity:1} }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+.lane-label { font-size:11px; fill:#888780; font-family:var(--font-sans); }
+.box-title { font-size:13px; font-weight:500; font-family:var(--font-sans); }
+.box-sub { font-size:11px; font-family:var(--font-sans); }
+.arrow-label { font-size:10px; font-family:var(--font-sans); fill:#888780; }
+
+.node1 { animation: fadein .5s ease both .1s; }
+.node2 { animation: fadein .5s ease both .3s; }
+.node3 { animation: fadein .5s ease both .5s; }
+.node4 { animation: fadein .5s ease both .7s; }
+.node5 { animation: fadein .5s ease both .9s; }
+.node6 { animation: fadein .5s ease both 1.1s; }
+.node7 { animation: fadein .5s ease both 1.3s; }
+
+.pipe1 { stroke-dasharray:6 4; stroke-dashoffset:200; animation: flow1 1.8s linear infinite 1.6s; }
+.pipe2 { stroke-dasharray:6 4; stroke-dashoffset:240; animation: flow2 2s linear infinite 2s; }
+.pipe3 { stroke-dasharray:6 4; stroke-dashoffset:180; animation: flow3 1.6s linear infinite 2.4s; }
+
+.dot1 { offset-path: path('M340,118 L340,158'); animation: dot-travel1 1.8s linear infinite 1.6s; }
+.dot2 { offset-path: path('M340,270 L340,310'); animation: dot-travel2 2s linear infinite 2s; }
+.dot3 { offset-path: path('M340,422 L340,462'); animation: dot-travel3 1.6s linear infinite 2.4s; }
+</style>
+
+<svg width="100%" viewBox="0 0 680 620" role="img">
+<title>Multi-cloud data migration pipeline: browser to EC2 to DynamoDB to Cosmos DB</title>
+<desc>Animated architecture diagram showing data flowing from a user browser through PHP on EC2, MariaDB, AWS DynamoDB, and finally Azure Cosmos DB.</desc>
+<defs>
+  <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </marker>
+
+  <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+    <feGaussianBlur stdDeviation="3" result="blur"/>
+    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+  </filter>
+</defs>
+
+<!-- ── BACKGROUND LANES ── -->
+<rect x="52" y="22" width="614" height="108" rx="10" fill="#E6F1FB" opacity=".18"/>
+<rect x="52" y="148" width="614" height="108" rx="10" fill="#E1F5EE" opacity=".2"/>
+<rect x="52" y="274" width="614" height="120" rx="10" fill="#FAEEDA" opacity=".22"/>
+<rect x="52" y="412" width="614" height="120" rx="10" fill="#EEEDFE" opacity=".2"/>
+
+<text class="lane-label" x="60" y="36">User</text>
+<text class="lane-label" x="60" y="162">EC2 instance</text>
+<text class="lane-label" x="60" y="288">AWS cloud  ·  eu-north-1</text>
+<text class="lane-label" x="60" y="426">Azure cloud</text>
+
+<!-- ── ROW 1: BROWSER ── -->
+<g class="node1">
+  <rect x="220" y="44" width="240" height="72" rx="10" fill="#B5D4F4" stroke="#378ADD" stroke-width="1.2"/>
+  <!-- browser chrome -->
+  <rect x="238" y="56" width="56" height="42" rx="5" fill="none" stroke="#185FA5" stroke-width="1"/>
+  <line x1="238" y1="66" x2="294" y2="66" stroke="#185FA5" stroke-width=".8"/>
+  <circle cx="244" cy="61" r="2" fill="#185FA5" opacity=".7"/>
+  <circle cx="251" cy="61" r="2" fill="#185FA5" opacity=".7"/>
+  <circle cx="258" cy="61" r="2" fill="#185FA5" opacity=".7"/>
+  <!-- form lines inside browser -->
+  <rect x="242" y="70" width="44" height="4" rx="1" fill="#185FA5" opacity=".3"/>
+  <rect x="242" y="77" width="30" height="4" rx="1" fill="#185FA5" opacity=".2"/>
+  <rect x="242" y="84" width="20" height="6" rx="2" fill="#185FA5" opacity=".4"/>
+  <text class="box-title" x="370" y="76" text-anchor="middle" fill="#0C447C">User browser</text>
+  <text class="box-sub" x="370" y="96" text-anchor="middle" fill="#185FA5">HTML form  ·  POST /submit.php</text>
+</g>
+
+<!-- pulse dot at bottom of browser -->
+<circle cx="340" cy="116" r="5" fill="#378ADD" opacity=".9">
+  <animate attributeName="r" values="4;7;4" dur="1.8s" repeatCount="indefinite" begin="1.6s"/>
+  <animate attributeName="opacity" values="1;.4;1" dur="1.8s" repeatCount="indefinite" begin="1.6s"/>
+</circle>
+
+<!-- arrow 1 -->
+<line x1="340" y1="120" x2="340" y2="155" stroke="#378ADD" stroke-width="1.8" class="pipe1" marker-end="url(#arr)"/>
+<text class="arrow-label" x="348" y="140">POST request</text>
+
+<!-- ── ROW 2: EC2 ── -->
+<g class="node2">
+  <rect x="62" y="160" width="176" height="80" rx="10" fill="#9FE1CB" stroke="#1D9E75" stroke-width="1.2"/>
+  <!-- PHP swirl icon -->
+  <ellipse cx="96" cy="196" rx="20" ry="12" fill="none" stroke="#085041" stroke-width="1.2"/>
+  <text style="font-size:11px;font-weight:600;font-family:var(--font-sans)" x="96" y="200" text-anchor="middle" fill="#085041">PHP</text>
+  <text class="box-title" x="178" y="192" text-anchor="middle" fill="#085041">submit.php</text>
+  <text class="box-sub" x="178" y="210" text-anchor="middle" fill="#0F6E56">Validates + inserts</text>
+</g>
+
+<g class="node3">
+  <rect x="252" y="160" width="176" height="80" rx="10" fill="#FAC775" stroke="#BA7517" stroke-width="1.2"/>
+  <!-- DB icon -->
+  <ellipse cx="284" cy="184" rx="16" ry="7" fill="none" stroke="#633806" stroke-width="1"/>
+  <line x1="268" y1="184" x2="268" y2="200" stroke="#633806" stroke-width="1"/>
+  <line x1="300" y1="184" x2="300" y2="200" stroke="#633806" stroke-width="1"/>
+  <ellipse cx="284" cy="200" rx="16" ry="7" fill="none" stroke="#633806" stroke-width="1"/>
+  <text class="box-title" x="358" y="192" text-anchor="middle" fill="#633806">MariaDB</text>
+  <text class="box-sub" x="358" y="210" text-anchor="middle" fill="#854F0B">user_app.users</text>
+</g>
+
+<g class="node4">
+  <rect x="442" y="160" width="176" height="80" rx="10" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="1.2"/>
+  <!-- stack icon -->
+  <rect x="460" y="174" width="36" height="7" rx="2" fill="none" stroke="#444441" stroke-width="1"/>
+  <rect x="460" y="184" width="36" height="7" rx="2" fill="none" stroke="#444441" stroke-width="1"/>
+  <rect x="460" y="194" width="36" height="7" rx="2" fill="none" stroke="#444441" stroke-width="1"/>
+  <text class="box-title" x="548" y="192" text-anchor="middle" fill="#2C2C2A">LAMP stack</text>
+  <text class="box-sub" x="548" y="210" text-anchor="middle" fill="#444441">Apache · PHP · Python3</text>
+</g>
+
+<!-- PHP → MariaDB arrow -->
+<line x1="238" y1="200" x2="250" y2="200" stroke="#1D9E75" stroke-width="1.5" marker-end="url(#arr)"/>
+<!-- MariaDB → Stack arrow (informational) -->
+<line x1="428" y1="200" x2="440" y2="200" stroke="#888780" stroke-width="1" stroke-dasharray="3 2" marker-end="url(#arr)"/>
+
+<!-- pulse dot -->
+<circle cx="340" cy="268" r="5" fill="#BA7517" opacity=".9">
+  <animate attributeName="r" values="4;7;4" dur="2s" repeatCount="indefinite" begin="2s"/>
+  <animate attributeName="opacity" values="1;.4;1" dur="2s" repeatCount="indefinite" begin="2s"/>
+</circle>
+
+<!-- arrow 2 -->
+<line x1="340" y1="272" x2="340" y2="308" stroke="#BA7517" stroke-width="1.8" class="pipe2" marker-end="url(#arr)"/>
+<text class="arrow-label" x="348" y="292">pymysql + boto3</text>
+
+<!-- ── ROW 3: AWS ── -->
+<g class="node5">
+  <rect x="62" y="316" width="176" height="88" rx="10" fill="#FAC775" stroke="#BA7517" stroke-width="1.2"/>
+  <!-- shield -->
+  <path d="M92 330 L92 346 Q92 353 100 357 Q108 353 108 346 L108 330 Z" fill="none" stroke="#633806" stroke-width="1.2"/>
+  <line x1="100" y1="338" x2="100" y2="348" stroke="#633806" stroke-width=".8"/>
+  <text class="box-title" x="162" y="343" text-anchor="middle" fill="#633806">AWS IAM</text>
+  <text class="box-sub" x="162" y="361" text-anchor="middle" fill="#854F0B">Access keys</text>
+  <text class="box-sub" x="162" y="376" text-anchor="middle" fill="#854F0B">DynamoDB perms</text>
+</g>
+
+<g class="node6">
+  <rect x="252" y="316" width="176" height="88" rx="10" fill="#FAC775" stroke="#BA7517" stroke-width="1.5"/>
+  <!-- DynamoDB stacked ovals -->
+  <ellipse cx="284" cy="342" rx="18" ry="8" fill="none" stroke="#633806" stroke-width="1.1"/>
+  <line x1="266" y1="342" x2="266" y2="360" stroke="#633806" stroke-width="1.1"/>
+  <line x1="302" y1="342" x2="302" y2="360" stroke="#633806" stroke-width="1.1"/>
+  <ellipse cx="284" cy="360" rx="18" ry="8" fill="none" stroke="#633806" stroke-width="1.1"/>
+  <ellipse cx="284" cy="351" rx="18" ry="8" fill="none" stroke="#633806" stroke-width=".6" opacity=".4"/>
+  <text class="box-title" x="360" y="343" text-anchor="middle" fill="#633806">DynamoDB</text>
+  <text class="box-sub" x="360" y="361" text-anchor="middle" fill="#854F0B">Table: users</text>
+  <text class="box-sub" x="360" y="376" text-anchor="middle" fill="#854F0B">Partition key: user_id</text>
+  <!-- shimmer -->
+  <rect x="252" y="316" width="176" height="88" rx="10" fill="#EF9F27" opacity="0">
+    <animate attributeName="opacity" values="0;.12;0" dur="3s" repeatCount="indefinite" begin="2s"/>
+  </rect>
+</g>
+
+<g class="node7">
+  <rect x="442" y="316" width="176" height="88" rx="10" fill="#D3D1C7" stroke="#5F5E5A" stroke-width="1.2"/>
+  <!-- terminal -->
+  <rect x="460" y="330" width="36" height="26" rx="3" fill="none" stroke="#444441" stroke-width="1"/>
+  <text style="font-size:9px;font-family:monospace" x="463" y="344" fill="#2C2C2A">$ aws</text>
+  <text style="font-size:9px;font-family:monospace" x="463" y="354" fill="#2C2C2A">config</text>
+  <text class="box-title" x="548" y="343" text-anchor="middle" fill="#2C2C2A">AWS CLI</text>
+  <text class="box-sub" x="548" y="361" text-anchor="middle" fill="#444441">Region eu-north-1</text>
+  <text class="box-sub" x="548" y="376" text-anchor="middle" fill="#444441">boto3 SDK</text>
+</g>
+
+<!-- IAM → Dynamo arrow -->
+<line x1="238" y1="360" x2="250" y2="360" stroke="#BA7517" stroke-width="1.2" marker-end="url(#arr)"/>
+
+<!-- pulse dot -->
+<circle cx="340" cy="420" r="5" fill="#7F77DD" opacity=".9">
+  <animate attributeName="r" values="4;7;4" dur="1.6s" repeatCount="indefinite" begin="2.4s"/>
+  <animate attributeName="opacity" values="1;.4;1" dur="1.6s" repeatCount="indefinite" begin="2.4s"/>
+</circle>
+
+<!-- arrow 3 -->
+<line x1="340" y1="424" x2="340" y2="460" stroke="#7F77DD" stroke-width="1.8" class="pipe3" marker-end="url(#arr)"/>
+<text class="arrow-label" x="348" y="444">azure-cosmos SDK</text>
+
+<!-- ── ROW 4: AZURE ── -->
+<!-- Cosmos DB -->
+<rect x="62" y="468" width="200" height="88" rx="10" fill="#AFA9EC" stroke="#534AB7" stroke-width="1.5"/>
+<!-- atom rings -->
+<circle cx="100" cy="510" r="18" fill="none" stroke="#3C3489" stroke-width="1.2">
+  <animateTransform attributeName="transform" type="rotate" from="0 100 510" to="360 100 510" dur="6s" repeatCount="indefinite"/>
+</circle>
+<ellipse cx="100" cy="510" rx="18" ry="8" fill="none" stroke="#3C3489" stroke-width="1" opacity=".6">
+  <animateTransform attributeName="transform" type="rotate" from="30 100 510" to="390 100 510" dur="4s" repeatCount="indefinite"/>
+</ellipse>
+<circle cx="100" cy="510" r="4" fill="#534AB7"/>
+<text class="box-title" x="182" y="498" text-anchor="middle" fill="#26215C">Cosmos DB</text>
+<text class="box-sub" x="182" y="516" text-anchor="middle" fill="#3C3489">Core SQL API · serverless</text>
+<text class="box-sub" x="182" y="531" text-anchor="middle" fill="#3C3489">user_db / users</text>
+<rect x="62" y="468" width="200" height="88" rx="10" fill="#7F77DD" opacity="0">
+  <animate attributeName="opacity" values="0;.1;0" dur="2.5s" repeatCount="indefinite" begin="2.4s"/>
+</rect>
+
+<!-- Python script -->
+<rect x="278" y="468" width="200" height="88" rx="10" fill="#AFA9EC" stroke="#534AB7" stroke-width="1.2"/>
+<path d="M314 488 Q314 480 322 480 L330 480 Q338 480 338 488 L338 496 Q338 504 330 504 L322 504 Q314 504 314 496 Z" fill="none" stroke="#3C3489" stroke-width="1"/>
+<path d="M338 494 Q338 502 346 502 L354 502 Q362 502 362 494 L362 486 Q362 478 354 478 L346 478 Q338 478 338 486 Z" fill="none" stroke="#3C3489" stroke-width="1"/>
+<line x1="330" y1="504" x2="346" y2="504" stroke="#3C3489" stroke-width="1"/>
+<text class="box-title" x="386" y="498" text-anchor="middle" fill="#26215C">Python script</text>
+<text class="box-sub" x="386" y="516" text-anchor="middle" fill="#3C3489">Pagination + upsert</text>
+<text class="box-sub" x="386" y="531" text-anchor="middle" fill="#3C3489">Decimal conversion</text>
+
+<!-- Env vars -->
+<rect x="494" y="468" width="152" height="88" rx="10" fill="#9FE1CB" stroke="#1D9E75" stroke-width="1.2"/>
+<rect x="516" y="488" width="24" height="20" rx="3" fill="none" stroke="#085041" stroke-width="1.2"/>
+<path d="M520 488 L520 483 Q520 476 528 476 Q536 476 536 483 L536 488" fill="none" stroke="#085041" stroke-width="1.2"/>
+<circle cx="528" cy="498" r="2.5" fill="#085041"/>
+<text class="box-title" x="562" y="498" text-anchor="middle" fill="#085041">Env vars</text>
+<text class="box-sub" x="562" y="516" text-anchor="middle" fill="#0F6E56">No hardcoded</text>
+<text class="box-sub" x="562" y="531" text-anchor="middle" fill="#0F6E56">secrets</text>
+
+<!-- script → cosmos -->
+<line x1="278" y1="510" x2="264" y2="510" stroke="#7F77DD" stroke-width="1.5" marker-end="url(#arr)"/>
+<!-- env → script -->
+<line x1="494" y1="510" x2="480" y2="510" stroke="#1D9E75" stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#arr)"/>
+
+<!-- ── LEGEND ── -->
+<rect x="60" y="578" width="8" height="8" rx="1" fill="#378ADD"/>
+<text class="arrow-label" x="74" y="586">Blue = user/web tier</text>
+<rect x="168" y="578" width="8" height="8" rx="1" fill="#1D9E75"/>
+<text class="arrow-label" x="182" y="586">Teal = app / EC2</text>
+<rect x="268" y="578" width="8" height="8" rx="1" fill="#BA7517"/>
+<text class="arrow-label" x="282" y="586">Amber = AWS</text>
+<rect x="356" y="578" width="8" height="8" rx="1" fill="#534AB7"/>
+<text class="arrow-label" x="370" y="586">Purple = Azure</text>
+<line x1="450" y1="582" x2="470" y2="582" stroke="#888780" stroke-width="1" stroke-dasharray="3 2"/>
+<text class="arrow-label" x="476" y="586">Config / creds</text>
+
+</svg>
+
 ## Architecture Overview
 
 ```
