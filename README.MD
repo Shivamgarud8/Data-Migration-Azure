@@ -28,7 +28,7 @@ This project demonstrates a real-world, production-style multi-cloud data migrat
 ---
 
 ## Architecture Overview
-![img](img/d1.png).
+![img](img/work.png).
 
 ## Prerequisites
 
