@@ -46,7 +46,7 @@ Before starting, ensure you have the following ready:
 ---
 
 ### 1. AWS EC2 Server Setup
-
+![img](img/s1.png).
 **Launch an EC2 instance**
 
 1. Log in to the AWS Management Console at console.aws.amazon.com.
@@ -67,7 +67,7 @@ Once connected via SSH, update all system packages first. Then install the follo
 ---
 
 ### 2. Web Application Setup
-
+![img](img/s2.png).
 **HTML form — index.html**
 
 Place an HTML file at `/var/www/html/index.html`. The form collects three fields from the user: Name, Phone, and Age. The form method is POST and the action points to `submit.php` in the same directory.
@@ -84,7 +84,7 @@ Place a PHP script at `/var/www/html/submit.php`. This script is responsible for
 All database credentials in this file should be moved to environment variables before any version control commit.
 
 ---
-
+![img](img/s3.png).
 ### 3. MariaDB Configuration
 
 **Secure the installation**
@@ -137,21 +137,21 @@ Once the role is attached, any AWS SDK or CLI call made from that EC2 instance w
 **Configure the AWS CLI on EC2**
 
 Install the AWS CLI using pip if it is not already present. Run the `aws configure` command and provide your Access Key ID, Secret Access Key, default region as `eu-north-1`, and output format as `json`. After configuring, verify the setup with `aws sts get-caller-identity` — it should return your account ID and IAM user or role details.
-
+![img](img/d1.png).
 ---
-
+![img](img/d2.png).
 ### 5. DynamoDB Table Setup
 
 **Create the table via AWS CLI**
 
 Use the AWS CLI to create a DynamoDB table named `users` in the `eu-north-1` region. The table requires a single attribute named `user_id` of type Number, configured as the HASH partition key. Set the billing mode to PAY_PER_REQUEST so you are charged only for actual reads and writes rather than provisioned capacity.
-
+![img](img/d3.png).
 **Verify the table**
 
 Run the describe-table command targeting the `users` table in `eu-north-1`. Confirm that the table status is ACTIVE before running any migration script against it.
 
 ---
-
+![img](img/d4.png).
 ### 6. MariaDB to DynamoDB Migration
 
 **Install Python dependencies**
@@ -161,7 +161,7 @@ Install the `pymysql` and `boto3` packages using pip3 on the EC2 instance. The `
 **How the migration script works — migrate_to_dynamo.py**
 
 The script performs these steps in order:
-
+![img](img/d5.png).
 1. Opens a connection to the local MariaDB `user_app` database using pymysql and the root credentials.
 2. Executes a SELECT query to fetch all rows from the `users` table, retrieving user_id, name, phone, and age for each record.
 3. Opens a DynamoDB resource connection via boto3 targeting the `eu-north-1` region.
@@ -169,7 +169,7 @@ The script performs these steps in order:
 5. Increments a counter for each successful write and prints the total on completion.
 
 After running the script, verify the records in the AWS DynamoDB console under the `users` table in `eu-north-1`. You should see one item per user that was registered through the web form.
-
+![img](img/d6.png).
 ---
 
 ### 7. Azure Cosmos DB Setup
@@ -194,7 +194,7 @@ Once deployment is complete, go to your Cosmos DB account and open Data Explorer
 **Create the container**
 
 Inside `user_db`, click New Container and fill in the following fields:
-
+![img](img/a1.png).
 - Database ID: select `user_db` (existing)
 - Container ID: `users`
 - Partition Key: `/user_id`
@@ -213,7 +213,7 @@ Copy both values. On your EC2 instance, set them as environment variables named 
 Never paste these credentials directly into a Python script or commit them to any repository.
 
 ---
-
+![img](img/a2.png).
 ### 8. DynamoDB to Cosmos DB Migration
 
 **Install Python dependencies**
@@ -232,7 +232,7 @@ The script performs these steps in sequence:
 6. Adds an `id` field to each item by converting the `user_id` value to a string. Cosmos DB requires every document to contain a field literally named `id` as a string — this is non-negotiable.
 7. Calls upsert_item on the Cosmos container for each converted record. Upsert means that if a document with the same `id` already exists in Cosmos DB it will be overwritten rather than creating a duplicate or raising an error, making the script safe to run multiple times.
 8. Prints the total number of records successfully upserted when the loop completes.
-
+![img](img/a3.png).
 **Verify the migration in Azure Portal**
 
 After the script finishes, open the Azure Portal and navigate to your Cosmos DB account. Go to Data Explorer > user_db > users > Items. All migrated records should appear here with their user_id, name, phone, and age fields intact.
@@ -249,7 +249,7 @@ Following secure practices throughout this project is non-negotiable. These are 
 - If a credential is ever accidentally committed to Git history, it must be rotated immediately. For AWS, go to IAM > Security credentials to generate new access keys and deactivate the old ones. For Azure, go to Cosmos DB account > Settings > Keys and regenerate the primary key. Never simply delete the credential from the file and recommit — the secret remains in Git history until history is rewritten.
 - To remove secrets from Git history before pushing to a public repository, use the BFG Repo Cleaner tool or the `git filter-branch` command. Both tools rewrite commit history to eliminate the offending data.
 - GitHub's secret scanning feature will automatically reject pushes that contain detected AWS keys or Azure keys. If a push is blocked, history rewriting is required before it will be accepted.
-
+![img](img/.png).
 ---
 
 ### 10. GitHub Integration
@@ -275,7 +275,8 @@ Create a new repository on GitHub. Copy the remote URL. Add it as the origin rem
 If GitHub rejects a push because a secret was detected, do not simply remove the key from the latest file. The secret still lives in a previous commit in the Git history. Use BFG Repo Cleaner or an interactive rebase to purge it from history, then force-push the cleaned history. Only then will GitHub accept the push.
 
 ---
-
+![img](img/result.png).
+![img](img/r1.png).
 ## Key Features
 
 - End-to-end multi-cloud data migration from AWS to Azure
