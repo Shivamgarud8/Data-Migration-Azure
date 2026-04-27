@@ -1,0 +1,544 @@
+
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .portal {
+    font-family: 'Sora', sans-serif;
+    background: #040d1a;
+    min-height: 100vh;
+    color: #e2eaf8;
+    padding: 0;
+  }
+
+  .grid-bg {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,120,212,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,120,212,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .content { position: relative; z-index: 1; padding: 0 0 3rem; }
+
+  /* Header */
+  .header {
+    background: rgba(4,16,42,0.95);
+    border-bottom: 1px solid rgba(0,120,212,0.25);
+    padding: 0 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 60px;
+  }
+  .logo { display: flex; align-items: center; gap: 10px; }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, #0078d4, #50e6ff);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+  .logo-text { font-size: 15px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+  .logo-sub { font-size: 11px; color: #50b4e6; font-weight: 400; }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .badge-azure {
+    background: rgba(0,120,212,0.15);
+    border: 1px solid rgba(0,120,212,0.4);
+    color: #50b4e6;
+    font-size: 11px; font-weight: 500;
+    padding: 4px 10px; border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .status-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #10d070;
+    box-shadow: 0 0 6px #10d070;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* Pipeline Section */
+  .pipeline-section { padding: 2rem 2rem 0; }
+  .section-label {
+    font-size: 11px; font-weight: 500; letter-spacing: 1.5px;
+    color: #4a7a9b; text-transform: uppercase; margin-bottom: 1rem;
+  }
+
+  .pipeline {
+    display: flex; align-items: center; gap: 0;
+    background: rgba(8,22,48,0.8);
+    border: 1px solid rgba(0,120,212,0.2);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    overflow-x: auto;
+  }
+
+  .pipe-node {
+    flex: 1; min-width: 120px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .pipe-icon {
+    width: 52px; height: 52px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; border: 1px solid transparent;
+    position: relative;
+  }
+  .pipe-icon.mariadb { background: rgba(3,65,133,0.3); border-color: rgba(3,65,133,0.6); }
+  .pipe-icon.aws { background: rgba(255,153,0,0.12); border-color: rgba(255,153,0,0.4); }
+  .pipe-icon.azure { background: rgba(0,120,212,0.15); border-color: rgba(0,120,212,0.5); }
+
+  .pipe-name { font-size: 12px; font-weight: 500; color: #c0d4e8; text-align: center; }
+  .pipe-sub { font-size: 10px; color: #4a7a9b; font-family: 'JetBrains Mono', monospace; text-align: center; }
+
+  .pipe-status {
+    font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .ps-active { background: rgba(16,208,112,0.1); color: #10d070; border: 1px solid rgba(16,208,112,0.3); }
+  .ps-ready { background: rgba(255,153,0,0.1); color: #ff9900; border: 1px solid rgba(255,153,0,0.3); }
+  .ps-sync { background: rgba(0,120,212,0.15); color: #50b4e6; border: 1px solid rgba(0,120,212,0.4); }
+
+  .pipe-arrow {
+    flex: 0 0 60px; display: flex; flex-direction: column;
+    align-items: center; gap: 4px; padding: 0 4px;
+  }
+  .arrow-line {
+    height: 2px; width: 100%;
+    background: linear-gradient(90deg, rgba(0,120,212,0.3), rgba(80,180,230,0.7), rgba(0,120,212,0.3));
+    position: relative;
+  }
+  .arrow-line::after {
+    content: '▶'; position: absolute; right: -6px; top: -7px;
+    font-size: 12px; color: #50b4e6;
+  }
+  .arrow-label { font-size: 10px; color: #4a7a9b; font-family: 'JetBrains Mono', monospace; }
+
+  /* Stats Row */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    padding: 1rem 2rem;
+  }
+  .stat-card {
+    background: rgba(8,22,48,0.8);
+    border: 1px solid rgba(0,120,212,0.15);
+    border-radius: 10px; padding: 12px 16px;
+  }
+  .stat-label { font-size: 11px; color: #4a7a9b; margin-bottom: 6px; letter-spacing: 0.5px; }
+  .stat-value { font-size: 22px; font-weight: 600; color: #fff; font-family: 'JetBrains Mono', monospace; }
+  .stat-value.blue { color: #50b4e6; }
+  .stat-value.green { color: #10d070; }
+  .stat-value.orange { color: #ff9900; }
+  .stat-change { font-size: 10px; color: #4a7a9b; margin-top: 4px; }
+
+  /* Form Section */
+  .form-section { padding: 0 2rem; }
+  .form-card {
+    background: rgba(8,22,48,0.85);
+    border: 1px solid rgba(0,120,212,0.2);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .form-header {
+    background: rgba(0,120,212,0.08);
+    border-bottom: 1px solid rgba(0,120,212,0.15);
+    padding: 1rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .form-title { font-size: 14px; font-weight: 500; color: #c0d4e8; }
+  .form-route {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: #4a7a9b;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .route-item { color: #50b4e6; }
+  .route-sep { color: #2a4a6a; }
+
+  .form-body { padding: 1.5rem; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  .form-label {
+    font-size: 11px; font-weight: 500; color: #4a7a9b;
+    text-transform: uppercase; letter-spacing: 0.8px;
+  }
+  .required-star { color: #e24b4a; margin-left: 2px; }
+
+  .form-input {
+    background: rgba(4,16,42,0.8);
+    border: 1px solid rgba(0,120,212,0.25);
+    border-radius: 8px;
+    color: #e2eaf8;
+    font-family: 'Sora', sans-serif;
+    font-size: 13px;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+  }
+  .form-input::placeholder { color: #2a4a6a; }
+  .form-input:focus {
+    border-color: rgba(0,120,212,0.7);
+    box-shadow: 0 0 0 3px rgba(0,120,212,0.1);
+  }
+  .form-input:hover { border-color: rgba(0,120,212,0.4); }
+
+  select.form-input { cursor: pointer; }
+  select.form-input option { background: #040d1a; color: #e2eaf8; }
+
+  .input-group { position: relative; }
+  .input-prefix {
+    position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-size: 13px; color: #4a7a9b; font-family: 'JetBrains Mono', monospace;
+    pointer-events: none;
+  }
+  .form-input.prefixed { padding-left: 28px; }
+
+  .form-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 1.5rem; padding-top: 1.25rem;
+    border-top: 1px solid rgba(0,120,212,0.12);
+  }
+
+  .target-badges { display: flex; gap: 8px; align-items: center; }
+  .target-label { font-size: 11px; color: #4a7a9b; }
+  .target-badge {
+    font-size: 11px; padding: 4px 10px; border-radius: 20px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 500;
+    cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .tb-maria { background: rgba(3,65,133,0.2); border: 1px solid rgba(3,65,133,0.5); color: #6ab0f5; }
+  .tb-dynamo { background: rgba(255,153,0,0.1); border: 1px solid rgba(255,153,0,0.4); color: #ff9900; }
+  .tb-cosmos { background: rgba(0,120,212,0.15); border: 1px solid rgba(0,120,212,0.4); color: #50b4e6; }
+  .target-badge.active { opacity: 1; }
+  .target-badge:not(.active) { opacity: 0.45; }
+
+  .submit-btn {
+    background: linear-gradient(135deg, #0078d4, #106ebe);
+    border: none; border-radius: 8px;
+    color: #fff; font-family: 'Sora', sans-serif;
+    font-size: 13px; font-weight: 500;
+    padding: 10px 24px; cursor: pointer;
+    display: flex; align-items: center; gap: 8px;
+    transition: all 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .submit-btn:hover { background: linear-gradient(135deg, #106ebe, #005a9e); transform: translateY(-1px); }
+  .submit-btn:active { transform: scale(0.98); }
+  .btn-icon { font-size: 14px; }
+
+  /* Log Section */
+  .log-section { padding: 0 2rem; margin-top: 1rem; }
+  .log-card {
+    background: rgba(4,10,28,0.9);
+    border: 1px solid rgba(0,120,212,0.15);
+    border-radius: 12px; overflow: hidden;
+  }
+  .log-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid rgba(0,120,212,0.1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .log-title { font-size: 11px; color: #4a7a9b; letter-spacing: 1px; text-transform: uppercase; font-family: 'JetBrains Mono', monospace; }
+  .log-clear { font-size: 11px; color: #2a4a6a; cursor: pointer; transition: color 0.15s; }
+  .log-clear:hover { color: #50b4e6; }
+  .log-body { padding: 12px 16px; max-height: 160px; overflow-y: auto; }
+  .log-entry {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; line-height: 1.8; display: flex; gap: 10px;
+    opacity: 0; animation: fadeIn 0.3s forwards;
+  }
+  @keyframes fadeIn { to { opacity: 1; } }
+  .log-time { color: #2a4a6a; flex-shrink: 0; }
+  .log-msg { color: #6a9ab8; }
+  .log-msg.success { color: #10d070; }
+  .log-msg.error { color: #e24b4a; }
+  .log-msg.info { color: #50b4e6; }
+  .log-msg.warn { color: #ff9900; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: rgba(8,22,48,0.98);
+    border: 1px solid rgba(0,120,212,0.4);
+    border-radius: 10px; padding: 14px 18px;
+    font-size: 13px; color: #c0d4e8;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    transform: translateY(80px); opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 100; max-width: 320px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-icon { font-size: 18px; }
+  .toast-body {}
+  .toast-title { font-weight: 500; margin-bottom: 2px; color: #fff; }
+  .toast-sub { font-size: 11px; color: #4a7a9b; font-family: 'JetBrains Mono', monospace; }
+</style>
+
+<div class="portal">
+  <div class="grid-bg"></div>
+  <div class="content">
+
+    <div class="header">
+      <div class="logo">
+        <div class="logo-icon">☁</div>
+        <div>
+          <div class="logo-text">DataMigrate</div>
+          <div class="logo-sub">Unified Cloud Migration Portal</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="badge-azure">⚡ Azure Connected</span>
+        <div class="status-dot" title="All systems operational"></div>
+      </div>
+    </div>
+
+    <div class="pipeline-section">
+      <div class="section-label">Migration Pipeline</div>
+      <div class="pipeline">
+        <div class="pipe-node">
+          <div class="pipe-icon mariadb">🐬</div>
+          <div class="pipe-name">MariaDB</div>
+          <div class="pipe-sub">Local • Source</div>
+          <div class="pipe-status ps-active">● ACTIVE</div>
+        </div>
+
+        <div class="pipe-arrow">
+          <div class="arrow-line"></div>
+          <div class="arrow-label">ETL</div>
+        </div>
+
+        <div class="pipe-node">
+          <div class="pipe-icon aws">⚡</div>
+          <div class="pipe-name">DynamoDB</div>
+          <div class="pipe-sub">AWS • Stage</div>
+          <div class="pipe-status ps-ready">◐ READY</div>
+        </div>
+
+        <div class="pipe-arrow">
+          <div class="arrow-line"></div>
+          <div class="arrow-label">SYNC</div>
+        </div>
+
+        <div class="pipe-node">
+          <div class="pipe-icon azure">☁</div>
+          <div class="pipe-name">Cosmos DB</div>
+          <div class="pipe-sub">Azure • Target</div>
+          <div class="pipe-status ps-sync">⟳ AUTO-SYNC</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Records Migrated</div>
+        <div class="stat-value blue" id="stat-migrated">0</div>
+        <div class="stat-change">Lifetime total</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Sync Success Rate</div>
+        <div class="stat-value green">100%</div>
+        <div class="stat-change">Last 24 hours</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Targets</div>
+        <div class="stat-value" id="stat-targets">3</div>
+        <div class="stat-change">MariaDB + DynamoDB + Cosmos</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Pipeline Latency</div>
+        <div class="stat-value orange">42ms</div>
+        <div class="stat-change">Avg end-to-end</div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-label">Data Entry — Migration Source</div>
+      <div class="form-card">
+        <div class="form-header">
+          <div class="form-title">New Record Ingestion</div>
+          <div class="form-route">
+            <span class="route-item">MariaDB</span>
+            <span class="route-sep">→</span>
+            <span class="route-item">DynamoDB</span>
+            <span class="route-sep">→</span>
+            <span class="route-item">Cosmos DB</span>
+          </div>
+        </div>
+        <div class="form-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Full Name <span class="required-star">*</span></label>
+              <input class="form-input" id="inp-name" type="text" placeholder="e.g. Shivam Patel" autocomplete="off" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number <span class="required-star">*</span></label>
+              <div class="input-group">
+                <span class="input-prefix">+91</span>
+                <input class="form-input prefixed" id="inp-phone" type="tel" placeholder="7434895001" maxlength="10" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Age <span class="required-star">*</span></label>
+              <input class="form-input" id="inp-age" type="number" placeholder="22" min="1" max="120" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <select class="form-input" id="inp-dept">
+                <option value="">Select department</option>
+                <option>Cloud Architecture</option>
+                <option>DevOps Engineering</option>
+                <option>Data Engineering</option>
+                <option>Backend Development</option>
+                <option>Security</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Location</label>
+              <input class="form-input" id="inp-loc" type="text" placeholder="Pune / Surat / Mumbai" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Record Type</label>
+              <select class="form-input" id="inp-type">
+                <option value="user">User Record</option>
+                <option value="employee">Employee</option>
+                <option value="student">Student</option>
+                <option value="client">Client</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-footer">
+            <div class="target-badges">
+              <span class="target-label">Targets:</span>
+              <span class="target-badge tb-maria active" onclick="toggleTarget(this)">🐬 MariaDB</span>
+              <span class="target-badge tb-dynamo active" onclick="toggleTarget(this)">⚡ DynamoDB</span>
+              <span class="target-badge tb-cosmos active" onclick="toggleTarget(this)">☁ Cosmos DB</span>
+            </div>
+            <button class="submit-btn" onclick="submitRecord()">
+              <span class="btn-icon">⬆</span>
+              Migrate Record
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="log-section">
+      <div class="log-card">
+        <div class="log-header">
+          <span class="log-title">▸ Migration Log</span>
+          <span class="log-clear" onclick="clearLog()">clear</span>
+        </div>
+        <div class="log-body" id="log-body">
+          <div class="log-entry">
+            <span class="log-time">00:00:00</span>
+            <span class="log-msg info">[SYSTEM] Migration pipeline initialized. All 3 targets reachable.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toast-icon">✅</span>
+  <div class="toast-body">
+    <div class="toast-title" id="toast-title">Record Migrated</div>
+    <div class="toast-sub" id="toast-sub">Written to all 3 targets</div>
+  </div>
+</div>
+
+<script>
+  let migratedCount = 0;
+
+  function toggleTarget(el) {
+    el.classList.toggle('active');
+    const active = document.querySelectorAll('.target-badge.active').length;
+    document.getElementById('stat-targets').textContent = active;
+  }
+
+  function getTime() {
+    return new Date().toTimeString().slice(0,8);
+  }
+
+  function addLog(msg, type = '') {
+    const body = document.getElementById('log-body');
+    const entry = document.createElement('div');
+    entry.className = 'log-entry';
+    entry.innerHTML = `<span class="log-time">${getTime()}</span><span class="log-msg ${type}">${msg}</span>`;
+    body.appendChild(entry);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function showToast(title, sub, icon = '✅') {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-title').textContent = title;
+    document.getElementById('toast-sub').textContent = sub;
+    document.getElementById('toast-icon').textContent = icon;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3500);
+  }
+
+  function clearLog() {
+    document.getElementById('log-body').innerHTML = '';
+  }
+
+  function submitRecord() {
+    const name = document.getElementById('inp-name').value.trim();
+    const phone = document.getElementById('inp-phone').value.trim();
+    const age = document.getElementById('inp-age').value.trim();
+
+    if (!name || !phone || !age) {
+      addLog('[ERROR] Validation failed — Name, Phone, and Age are required.', 'error');
+      showToast('Validation Error', 'Fill all required fields', '⚠');
+      return;
+    }
+    if (phone.length !== 10) {
+      addLog('[ERROR] Phone must be 10 digits.', 'error');
+      return;
+    }
+
+    const dept = document.getElementById('inp-dept').value || 'Unassigned';
+    const loc = document.getElementById('inp-loc').value || 'N/A';
+    const type = document.getElementById('inp-type').value;
+    const targets = [...document.querySelectorAll('.target-badge.active')].map(b => b.textContent.trim());
+
+    const recId = 'REC-' + Date.now().toString(36).toUpperCase();
+    addLog(`[INGEST] New ${type} record — ID: ${recId}`, 'info');
+    addLog(`[DATA] name="${name}" | phone="+91${phone}" | age=${age} | dept="${dept}"`, '');
+
+    let delay = 300;
+    if (targets.some(t => t.includes('MariaDB'))) {
+      setTimeout(() => addLog(`[MariaDB] ✓ INSERT INTO users (id,name,phone,age) — 1 row written`, 'success'), delay);
+      delay += 400;
+    }
+    if (targets.some(t => t.includes('DynamoDB'))) {
+      setTimeout(() => addLog(`[DynamoDB] ✓ PutItem → table:users-migration — partition key: "${recId}"`, 'success'), delay);
+      delay += 400;
+    }
+    if (targets.some(t => t.includes('Cosmos'))) {
+      setTimeout(() => addLog(`[Cosmos DB] ✓ Document upserted → container:users — Auto-sync enabled`, 'success'), delay);
+      delay += 300;
+    }
+
+    setTimeout(() => {
+      migratedCount++;
+      document.getElementById('stat-migrated').textContent = migratedCount;
+      addLog(`[DONE] Record ${recId} replicated to ${targets.length} target(s) in ~42ms`, 'success');
+      showToast('Migration Complete', `${recId} → ${targets.length} target(s)`, '✅');
+
+      document.getElementById('inp-name').value = '';
+      document.getElementById('inp-phone').value = '';
+      document.getElementById('inp-age').value = '';
+      document.getElementById('inp-dept').value = '';
+      document.getElementById('inp-loc').value = '';
+    }, delay);
+  }
+</script>
