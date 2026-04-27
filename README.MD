@@ -51,7 +51,7 @@ This project demonstrates a real-world, production-style multi-cloud data migrat
 
 ## Architecture Overview
 
-![Architecture](jen/d1.png).
+![Architecture](img/work.png).
 
 **Data Flow Summary**
 
