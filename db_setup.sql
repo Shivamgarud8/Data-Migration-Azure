@@ -1,0 +1,11 @@
+CREATE DATABASE user_app;
+
+USE user_app;
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    phone VARCHAR(15),
+    age INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
