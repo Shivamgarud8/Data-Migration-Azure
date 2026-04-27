@@ -4,28 +4,6 @@
 
 ---
 
-## Table of Contents
-
-- [Project Summary](#project-summary)
-- [Tech Stack](#tech-stack)
-- [Architecture Overview](#architecture-overview)
-- [Prerequisites](#prerequisites)
-- [Step-by-Step Setup](#step-by-step-setup)
-  - [1. AWS EC2 Server Setup](#1-aws-ec2-server-setup)
-  - [2. Web Application Setup](#2-web-application-setup)
-  - [3. MariaDB Configuration](#3-mariadb-configuration)
-  - [4. AWS IAM and CLI Configuration](#4-aws-iam-and-cli-configuration)
-  - [5. DynamoDB Table Setup](#5-dynamodb-table-setup)
-  - [6. MariaDB to DynamoDB Migration](#6-mariadb-to-dynamodb-migration)
-  - [7. Azure Cosmos DB Setup](#7-azure-cosmos-db-setup)
-  - [8. DynamoDB to Cosmos DB Migration](#8-dynamodb-to-cosmos-db-migration)
-  - [9. Security and Credential Handling](#9-security-and-credential-handling)
-  - [10. GitHub Integration](#10-github-integration)
-- [Key Features](#key-features)
-- [Learning Outcomes](#learning-outcomes)
-- [Future Enhancements](#future-enhancements)
-
----
 
 ## Project Summary
 
